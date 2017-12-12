@@ -1,11 +1,10 @@
 var Movie = Backbone.Model.extend({
-
   defaults: {
     like: true
   },
 
   toggleLike: function() {
-    // your code here
+    this.get('like') ? this.set('like', false) : this.set('like', true);
   }
 
 });
@@ -21,7 +20,9 @@ var Movies = Backbone.Collection.extend({
   comparator: 'title',
 
   sortByField: function(field) {
-    // your code here
+    this.comparator = field;
+    this.sort();
+    // _.sortBy(this.comparator, field);
   }
 
 });
@@ -58,15 +59,27 @@ var MovieView = Backbone.View.extend({
                         </div>'),
 
   initialize: function() {
-    // your code here
+    this.model.on('change', function() {
+      this.render();
+    }, this); // Why the binding of this (optional third parameter) is necessary here?
   },
 
   events: {
+    //events are automatically added to be listened to
+    //event          //callback
     'click button': 'handleClick'
   },
 
   handleClick: function() {
     // your code here
+    // add event listener for click
+    this.on('change: click button', function() {
+    // access the model, call toggle function
+      this.model.toggleLike();
+    });
+    
+    
+    //this.model.toggleLike();
   },
 
   render: function() {
